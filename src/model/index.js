@@ -5,10 +5,9 @@ import state from '../state'
 export const COUNTER_MAX = 10 ;
 
 let model = {
-    counter: COUNTER_MAX,
-    started: false,
-    launched: false,
-    aborted: false
+    // counter: COUNTER_MAX,
+    users:[],
+    fetchUsers:false
 } ;
 
 model.present = data => {
@@ -16,16 +15,13 @@ model.present = data => {
     // if (state.counting(model)) {
     //     if (model.counter === 0) {
     //         model.launched = data.launched || false ;
-    //     } else {
-    //         model.aborted = data.aborted || false ;
-    //         if (data.counter !== undefined) { model.counter = data.counter ; }
     //     }
-    // } else {
-    //     if (state.ready(model)) {
-    //         model.started = data.started || false ;
-    //     }
-    // }
-    model.started = data.started;
+    if (state.notFetched(model)){
+        model.fetchUsers = data.fetchUsers;
+    }
+    if (state.fetching(model)){
+        model.users = data.users;
+    }
     state.render(model) ;
 };
 

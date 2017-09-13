@@ -14,56 +14,54 @@ view.init = model => {
     return view.ready(model) ;
 };
 
-{/*<div>*/}
-    {/*<p>{`Counter:${model.counter}`}</p>*/}
-    {/*<div onClick={() => actions.start({})}>*/}
-        {/*<input type="submit" value="Start"/>*/}
-    {/*</div>*/}
-{/*</div>*/}
 // State representation of the ready state
 view.ready = model => {
     return (
-       <div onClick={() => actions.start({})}>ready</div>
+        <main className="main">
+            <table className="table">
+                <tr>
+                    <th>Name</th>
+                    <th>E-mail</th>
+                    <th>ID</th>
+                </tr>
+                {
+                    model.users && model.users.map(user => {
+                        return (
+                            <tr>
+                                <td>{user.name}</td>
+                                <td>{user.email}</td>
+                                <td>{user.id}</td>
+                            </tr>
+                        )
+                    })
+                }
+            </table>
+        </main>
     )
 
 };
-{/*<div>*/}
-{/*<p>`Count down: ${model.counter}`</p>*/}
-{/*<div onClick={actions.abort({})}>*/}
-{/*<input type="submit" value="Abort"/>*/}
-{/*</div>*/}
-{/*</div>*/}
+
+view.loading = model => <div className="loading-wrap">Loading...</div>;
+
+view.noUsers = model => <div className="noUsers-wrap">You have no users</div>;
+
 // State representation of the counting state
-view.counting = model => {
-    console.log('counting action!, model => ',model)
+view.layout = children => {
     return (
-        <div onClick={() => actions.end({})}>COUNTING</div>
-
-    ) ;
-
-};
-
-// State representation of the aborted state
-view.aborted = model => {
-    return (
-        <p>`Aborted at Counter:${model.counter}`</p>
-    ) ;
-
-};
-
-// State representation of the launched state
-view.launched = model =>{
-    return (
-        <p>Launched</p>
+        <div className="app-wrapper layout">
+            <div onClick={actions.loadin}>Get Users</div>
+            <button>Delete Users</button>
+            {children}
+        </div>
     ) ;
 
 };
 
 //display the state representation
 view.display = representation =>  {
-    // let stateRepresentation = document.getElementById("root");
+    let stateRepresentation = view.layout(representation);
     // stateRepresentation.innerHTML = representation;
-    ReactDOM.render(representation, document.getElementById('root'));
+    ReactDOM.render(stateRepresentation, document.getElementById('root'));
 };
 
 // view.display = representation => representation

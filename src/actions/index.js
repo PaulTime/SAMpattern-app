@@ -2,47 +2,34 @@
  * Created by Home on 12.09.2017.
  */
 import model from '../model'
+import axios from 'axios'
+
+
 // Actions
 //
 
 let actions = {} ;
 
-actions.start = (data, present) => {
-    present = present || model.present ;
-    data.started = true ;
-    present(data) ;
-    return false ;
+actions.fetchUsers = (data = {}, present) => {
+    let users = [];
+    present = present || model.present;
+    axios.get('https://jsonplaceholder.typicode.com/users')
+        .then(res => {
+            users = res.data;
+            data.users = users ;
+            data.fetchUsers = false ;
+            present(data);
+            return false ;
+        })
+        .catch(err => {throw err});
 };
-actions.end = (data, present) => {
+actions.load = (data = {}, present) => {
     present = present || model.present ;
-    data.started = false ;
+    console.log('present =>', present)
+    data.fetchUsers = true;
     present(data) ;
     return false ;
 };
 
-actions.decrement = (data, present) => {
-    present = present || model.present ;
-    data = data || {} ;
-    data.counter = data.counter || 10 ;
-    let d = data ;
-    let p = present ;
-    setTimeout(function() {
-        d.counter = d.counter - 1 ;
-        p(d) ;
-    }, 1000) ;
-};
-
-actions.launch = (data, present) => {
-    present = present || model.present ;
-    data.launched = true ;
-    present(data) ;
-};
-
-actions.abort = (data, present) => {
-    present = present || model.present ;
-    data.aborted = true ;
-    present(data) ;
-    return false ;
-};
 
 export default actions

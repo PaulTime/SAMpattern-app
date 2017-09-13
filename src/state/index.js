@@ -16,49 +16,28 @@ let state = {view} ;
 
 
 // Derive the current state of the system
-state.ready = model => {
-    return ((model.counter === COUNTER_MAX) && !model.started && !model.launched && !model.aborted) ;
-};
+state.notFetched = model => !model.fetchUsers && !model.users.length;
 
-state.counting = model => {
-    return ((model.counter <= COUNTER_MAX) && (model.counter >= 0) && model.started && !model.launched && !model.aborted) ;
-};
+state.fetching = model => model.fetchUsers;
 
-state.launched = model => {
-    return ((model.counter === 0) && model.started && model.launched && !model.aborted) ;
-};
+state.fetchDone = model => !model.fetchUsers && !!model.users.length;
 
-state.text = model => {
-    return model.started ;
-}
-
-state.aborted = model => {
-    return (
-    (  model.counter <= COUNTER_MAX) && (model.counter >= 0)
-    && model.started && !model.launched && model.aborted ) ;
-};
 
 state.representation = model => {
     let representation = 'oops... something went wrong, the system is in an invalid state' ;
     console.log(state,view);
-    if (state.ready(model)) {
-        console.log('ready');
-        representation = view.ready(model) ;
+
+    if (state.notFetched(model)) {
+        console.log('state is fetching');
+        representation = view.noUsers(model) ;
     }
 
-    if (state.counting(model)) {
-        console.log('counting');
-        representation = view.counting(model) ;
+    if (state.fetching(model)) {
+        console.log('state is fetching');
+        representation = view.loading(model) ;
     }
 
-    if (state.launched(model)) {
-        representation = view.launched(model) ;
-    }
-
-    if (state.aborted(model)) {
-        representation = view.aborted(model) ;
-    }
-    console.log('representation => ',representation)
+    console.log('representation => ',representation);
     view.display(representation) ;
 };
 
@@ -67,21 +46,15 @@ state.representation = model => {
 // an action needs to be invoked
 
 state.nextAction = model => {
-    if (state.counting(model)) {
-        if (model.counter>0) {
-            actions.decrement({counter: model.counter},model.present) ;
-        }
-
-        if (model.counter === 0) {
-            actions.launch({},model.present) ;
-        }
+    if (state.fetching(model)) {
+        actions.fetchUsers({},model.present)
     }
 };
 
 state.render = model => {
     console.log('render => ',model, state);
     state.representation(model);
-    // state.nextAction(model);
+    state.nextAction(model);
 };
 
 export default state;
