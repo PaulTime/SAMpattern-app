@@ -20,7 +20,7 @@ state.notFetched = model => !model.fetchUsers && !model.users.length;
 
 state.fetching = model => model.fetchUsers;
 
-state.fetchDone = model => !model.fetchUsers && !!model.users.length;
+state.fetchDone = model => !!model.users.length;
 
 
 state.representation = model => {
@@ -35,6 +35,11 @@ state.representation = model => {
     if (state.fetching(model)) {
         console.log('state is fetching');
         representation = view.loading(model) ;
+        // return console.log(representation)
+    }
+
+    if (model.users.length){
+        representation = view.ready(model) ;
     }
 
     console.log('representation => ',representation);
@@ -46,8 +51,14 @@ state.representation = model => {
 // an action needs to be invoked
 
 state.nextAction = model => {
-    if (state.fetching(model)) {
+    console.log('next Action => state.fetching(model)',model,state.fetching(model));
+    if (state.fetching(model) && !model.users.length) {
+        console.log('state.fetching(model)!',state.fetching(model));
         actions.fetchUsers({},model.present)
+    }
+    if (state.fetchDone(model)) {
+        console.log('FETCH DONE!');
+        actions.finish_load({},model.present)
     }
 };
 

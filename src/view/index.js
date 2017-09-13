@@ -49,8 +49,8 @@ view.noUsers = model => <div className="noUsers-wrap">You have no users</div>;
 view.layout = children => {
     return (
         <div className="app-wrapper layout">
-            <div onClick={actions.loadin}>Get Users</div>
-            <button>Delete Users</button>
+            <button onClick={() => actions.load({},false)}>Get Users</button>
+            <button onClick={() => actions.deleteAll({},false)}>Delete Users</button>
             {children}
         </div>
     ) ;
