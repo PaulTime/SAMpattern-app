@@ -25,7 +25,7 @@ model.present = data => {
     //         model.started = data.started || false ;
     //     }
     // }
-    model.started = data.started
+    model.started = data.started;
     state.render(model) ;
 };
 
